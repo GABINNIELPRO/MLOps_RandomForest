@@ -1,0 +1,88 @@
+##################################################################
+#                      GLOBAL IGNORE RULES                       #
+##################################################################
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+##################################################################
+#                           PYTHON                               #
+##################################################################
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+venv/
+.venv/
+
+# Cache
+.ipynb_checkpoints/
+
+# Python packages
+*.egg-info/
+dist/
+build/
+
+# Sensitive files
+*.env
+*.env.local
+*.env.production
+.env.*
+
+##################################################################
+#                           BACKEND                               #
+##################################################################
+
+# DO NOT VERSION MODEL FILES (TOO LARGE)
+backend/src/model/*.pkl
+backend/src/model/*.joblib
+backend/src/model/*.bin
+backend/src/model/*.h5
+backend/src/model/*.sav
+backend/src/model/*.pt
+
+# Notebook outputs or temp
+backend/notebook/.ipynb_checkpoints/
+backend/notebook/*checkpoint.ipynb
+
+# Data files (large data)
+backend/data/
+!backend/data/raw/               # allow empty raw/ if needed
+
+##################################################################
+#                           FRONT-END                             #
+##################################################################
+
+# Node modules (VERY LARGE)
+front-end/node_modules/
+
+# Build outputs
+front-end/dist/
+front-end/build/
+front-end/.vite/
+
+# Temporary dev files
+front-end/.cache/
+front-end/**/*.log
+
+##################################################################
+#                           DOCKER                                #
+##################################################################
+
+# Docker build cache
+*.pid
+*.tar
+
+##################################################################
+#                           OTHERS                                #
+##################################################################
+
+# VS Code configs
+.vscode/
