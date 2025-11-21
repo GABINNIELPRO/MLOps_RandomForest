@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Récupérer le code du repo
+      # 1) Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2) Configurer les credentials AWS à partir des secrets
+      # 2) Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -23,12 +23,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3) Login à Amazon ECR
+      # 3) Login to Amazon ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # 4) Setup Docker Buildx
+      # 4) Setup Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -39,8 +39,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: |
-            ${{ secrets.ECR_BACKEND_REPO }}:latest
+          tags: ${{ secrets.ECR_BACKEND_REPO }}:latest
 
       # 6) Build & Push frontend
       - name: Build & Push frontend image
@@ -49,5 +48,4 @@ jobs:
           context: ./front-end
           file: ./front-end/Dockerfile
           push: true
-          tags: |
-            ${{ secrets.ECR_FRONTEND_REPO }}:latest
+          tags: ${{ secrets.ECR_FRONTEND_REPO }}:latest
