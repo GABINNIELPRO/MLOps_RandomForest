@@ -1,11 +1,11 @@
 import sys
 import os
 
-# Ajouter le dossier racine du projet au PYTHONPATH
+# Ajouter racine du projet au PYTHONPATH
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 sys.path.append(ROOT_DIR)
 
-from pathlib import Path
+import boto3
 import joblib
 import pandas as pd
 from fastapi import FastAPI
@@ -13,8 +13,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from src.preprocessing.feature_engineering import FEATURE_COLUMNS
-
-
 
 app = FastAPI(
     title="Immo Price Predictor API",
@@ -29,15 +27,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 📌 Chemin du modèle
-MODEL_PATH = Path(__file__).resolve().parents[1] / "src" / "model" / "model.pkl"
-_model = joblib.load(MODEL_PATH)
+# 📌 PARAMÈTRES S3
+BUCKET_NAME = "mlops-models-gabin"
+MODEL_KEY = "model.pkl"
+LOCAL_MODEL_FILE = "/tmp/model.pkl"
+
+
+def load_model_from_s3():
+    """Télécharge le modèle depuis S3 et le charge."""
+    if not os.path.exists(LOCAL_MODEL_FILE):
+        s3 = boto3.client("s3")
+        s3.download_file(BUCKET_NAME, MODEL_KEY, LOCAL_MODEL_FILE)
+
+    return joblib.load(LOCAL_MODEL_FILE)
+
+
+# 📌 Charger le modèle une seule fois
+_model = load_model_from_s3()
+
 
 # — le reste du fichier ensuite —
 
 
-
-# 📌 👉 ICI tu mets ta classe PropertyFeatures
 class PropertyFeatures(BaseModel):
     numero_disposition: float = 0
     adresse_numero: float = 0
