@@ -76,5 +76,9 @@ Un pipeline complet CI/CD a été mis en place :
 
 👉 http://54.199.207.13/
 
+## 📷 Video Démonstration
+
+👉 [Voir la vidéo](doc/MLOps.mp4)
+
 
 
