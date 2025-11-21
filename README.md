@@ -1,104 +1,142 @@
-# mlops-immobilier
-
-# Project: Real Estate Property Value Prediction
+# 🏡 Projet Deep Learning – Prédiction Immobilière
 
 **Date:** December 2024  
-**Presented to:** Mr. Yamak  
 **Presented by:** Gabin Niel  
 
 ---
 
-## 📄 Project Overview
+Ce projet a pour objectif de construire un modèle de deep learning capable de prédire la valeur foncière de biens immobiliers à partir d’un dataset public.
+Le travail inclut : préparation des données, exploration, entraînement du modèle, puis déploiement complet sur une plateforme cloud avec un pipeline CI/CD professionnel.
 
-This project focuses on **predicting real estate property values** using **Machine Learning** and **Deep Learning** techniques. The goal is to estimate the property’s market value based on multiple parameters such as surface area, number of rooms, location, and property type using a government-provided dataset.
+🚀 Fonctionnalités principales
 
----
+📊 Exploration et nettoyage des données
 
-## 🔹 Dataset
+🧠 Modélisation Deep Learning (réseau de neurones)
 
-- **Rows:** 305,000  
-- **Columns:** 41  
-- The dataset contains information on transactions, including property details, surface areas, location, type of property, and the transaction value (`valeur_foncière`).  
-- After preprocessing, the dataset was reduced to **74,000 rows** with **no missing values** and only the relevant columns kept.
+🧪 Évaluation du modèle et visualisations
 
----
+🌐 Déploiement d’une API backend pour servir le modèle
 
-## 🔹 Preprocessing Steps
+💻 Déploiement d’un frontend consommant l’API
 
-1. **Initial Data Cleaning**
-   - Removed irrelevant columns.
-   - Filled missing values using:
-     - `lot_surface_carrez` for `surface_reelle_bati`.
-     - Group-based means for latitude, longitude, and terrain area.
-   - Created **missing indicator columns** for certain features.
+⚙️ CI/CD automatisé
 
-2. **Transaction Consolidation**
-   - Grouped rows by `id_mutation` to merge multiple lots in a single transaction.
-   - Added a `dep` column to indicate the presence of dependencies (1 if present, 0 if absent).
+☁️ Infrastructure cloud entièrement sur AWS
 
-3. **Data Conversion**
-   - Converted object/string columns to numeric using `LabelEncoder`.
-   - Ensured all features are compatible with ML/DL models.
+🧠 Partie Deep Learning
+1. Préparation des données
 
-4. **Feature Selection**
-   - Retained 18 relevant columns including:
-     ```
-     surface_reelle_bati, nombre_pieces_principales, surface_terrain, 
-     code_type_local, id_mutation, nature_mutation, valeur_fonciere, 
-     adresse_nom_voie, code_commune, lot1_surface_carrez, lot2_surface_carrez, 
-     lot3_surface_carrez, lot4_surface_carrez, lot5_surface_carrez, 
-     nombre_lots, longitude, latitude, nature_culture
-     ```
+À partir du fichier data_immobiliers.csv :
 
-5. **Train/Test Split**
-   - 90% for training, 10% for testing.
-   - StandardScaler used for feature normalization.
+Suppression des colonnes inutiles
 
----
+Analyse des valeurs manquantes
 
-## 🔹 Models Used
+Normalisation / encodage
 
-### 1. **Linear Regression**
-- **R² Score:** 76%  
-- **MAE:** 89,477  
-- **RMSE:** 324,310  
-- **Observations:** Performed best among all tested models given dataset size.
+2. Exploration
 
-### 2. **Deep Learning (Neural Network)**
-- **Architecture:** 5 hidden layers, ReLU activation, BatchNormalization, EarlyStopping
-- **Optimizer:** Adam  
-- **Loss Function:** MSE  
-- **Epochs:** 50  
-- **R² Score:** 78%  
-- **MAE:** 74,000  
-- **Observations:** Slightly better R², but deep learning is less effective with limited data.
+Distribution de la valeur foncière
 
-> **Conclusion:** For this dataset (~74k rows), **linear regression** provides reliable predictions with slightly higher MAE, while deep learning is more data-hungry.
+Visualisations Matplotlib
 
----
+3. Modélisation
 
-## 🔹 Functions in the Repository
+Réseau de neurones dense (Keras/TensorFlow ou PyTorch selon ton notebook)
 
-1. **`clean_file()`**
-   - Applies the same preprocessing used for model training on new files.
+Split train/test
 
-2. **`predict_file()`**
-   - Imports CSV files, defines features, predicts property values.
-   - Outputs a new CSV with column `valeur_fonciere_predite`.
+Courbes d’apprentissage
 
----
+☁️ Architecture Cloud
 
-## 🔹 Key Takeaways
+L’application complète (modèle + API + frontend) a été déployée sur AWS.
 
-- Proper **data cleaning and preprocessing** is critical for accurate predictions.
-- Transaction consolidation is essential to avoid bias caused by repeated values.
-- Machine learning models, particularly **linear regression**, can outperform deep learning when dataset size is limited.
-- The project provides a framework to apply trained models on new data files automatically.
+🔹 Backend
 
----
+Serveur FastAPI/Flask (selon ton choix)
 
-## 📌 How to Use
+Endpoint /predict servant le modèle
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/<username>/<repo-name>.git
+🔹 Frontend
+
+Interface web simple permettant de saisir les valeurs et d’obtenir la prédiction
+
+Déployé sur la même plateforme cloud
+
+🗄️ Stockage du modèle
+
+Le modèle entraîné est stocké dans Amazon S3
+
+⚙️ CI/CD Automatisé
+
+Un pipeline CI/CD complet a été mis en place :
+
+🛠️ Build automatique des images (backend + frontend)
+
+📦 Push vers Amazon ECR
+
+🚀 Déploiement automatique sur Amazon ECS
+
+🔒 Droits gérés avec IAM
+
+📈 Logs et métriques via Amazon CloudWatch
+
+📦 Services AWS utilisés
+Service	Rôle
+Amazon S3	Stockage du modèle
+Amazon ECR	Registre Docker des images du backend et frontend
+Amazon ECS (Fargate)	Exécution du backend et frontend
+IAM	Gestion fine des permissions CI/CD et accès S3
+CloudWatch	Logs, monitoring et alarmes
+Load Balancer	Accès public à l’API / Frontend
+🏗️ Structure du projet
+.
+├── data/
+│   └── data_immobiliers.csv
+├── notebook/
+│   └── ProjetDeepLearning_GuindoSafieto.ipynb
+├── backend/
+│   ├── app.py
+│   ├── requirements.txt
+│   └── model/
+├── frontend/
+│   └── ...
+├── Dockerfile.backend
+├── Dockerfile.frontend
+└── README.md
+
+▶️ Lancer le projet en local
+Backend
+cd backend
+pip install -r requirements.txt
+python app.py
+
+Frontend
+
+Selon ta stack (React / Vue / simple HTML) :
+
+npm install
+npm run dev
+
+Docker (local)
+docker compose up --build
+
+🧪 Exemple d’appel API
+curl -X POST "https://ton-api/predict" \
+    -H "Content-Type: application/json" \
+    -d '{"surface": 80, "nb_pieces": 3, "type_local":"Appartement"}'
+
+📚 Notebook du projet
+
+Le notebook complet d’analyse et de modélisation se trouve ici :
+ProjetDeepLearning_GuindoSafieto.ipynb
+
+📦 Améliorations futures
+
+Ajout d’un modèle plus performant (XGBoost ou CNN tabulaire)
+
+Monitoring ML (MLflow / SageMaker)
+
+Dashboard d’analyse des prédictions
