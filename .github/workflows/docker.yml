@@ -1,4 +1,4 @@
-name: Build & Push Docker Images
+name: Build & Push Docker images to ECR
 
 on:
   push:
@@ -11,22 +11,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Récupération du code
+      # 1) Récupérer le code du repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2) Login Docker Hub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      # 2) Configurer les credentials AWS à partir des secrets
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # 3) Setup Buildx
+      # 3) Login à Amazon ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 4) Setup Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 4) Build & Push backend
+      # 5) Build & Push backend
       - name: Build & Push backend image
         uses: docker/build-push-action@v4
         with:
@@ -34,9 +40,9 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/mlops-backend:latest
+            ${{ secrets.ECR_BACKEND_REPO }}:latest
 
-      # 5) Build & Push frontend
+      # 6) Build & Push frontend
       - name: Build & Push frontend image
         uses: docker/build-push-action@v4
         with:
@@ -44,4 +50,4 @@ jobs:
           file: ./front-end/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/mlops-frontend:latest
+            ${{ secrets.ECR_FRONTEND_REPO }}:latest
