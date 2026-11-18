@@ -72,6 +72,14 @@ Un pipeline complet CI/CD a été mis en place :
 | CloudWatch | Logs, monitoring et alarmes |
 | Load Balancer | Accès public |
 
+## Demonstration
+
+
+
+https://github.com/user-attachments/assets/fbd857f7-9c26-481f-ad9f-64f8e9210f1a
+
+
+
 ## Projet déployé
 
 http://54.199.207.13/
